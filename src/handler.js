@@ -1,5 +1,5 @@
 const { nanoid } = require('nanoid');
-const { books } = require('./books');
+const books = require('./books');
 
 // Kriteria 1 menyimpan buku
 const addBookHandler = (request, h) => {
@@ -15,7 +15,7 @@ const addBookHandler = (request, h) => {
   } = request.payload;
 
   // Client tidak melampirkan properti namepada request body
-  if (name === undefined) {
+  if (!name) {
     const response = h.response({
       status: 'fail',
       message: 'Gagal menambahkan buku. Mohon isi nama buku',
@@ -102,18 +102,17 @@ const getAllBooksHandler = (request, h) => {
   }
   // kalau tidak ada query
   if (!name && !reading && !finished) {
-    const response = h
-      .response({
-        status: 'success',
-        data: {
-          books: books.map((book) => ({
-            id: book.id,
-            name: book.name,
-            publisher: book.publisher,
-          })),
-        },
-      })
-      .code(200);
+    const response = h.response({
+      status: 'success',
+      data: {
+        books: books.map((book) => ({
+          id: book.id,
+          name: book.name,
+          publisher: book.publisher,
+        })),
+      },
+    });
+    response.code(200);
 
     return response;
   }
@@ -175,7 +174,7 @@ const editBookByIdHandler = (request, h) => {
 
   if (index !== -1) {
     // Client tidak melampirkan properti name pada request body
-    if (name === undefined) {
+    if (!name) {
       const response = h.response({
         status: 'fail',
         message: 'Gagal memperbarui buku. Mohon isi nama buku',
